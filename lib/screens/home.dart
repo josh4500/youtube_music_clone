@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:youtube_music_clone/provider/provider.dart';
 import 'package:youtube_music_clone/screens/player/player.dart';
 import 'package:youtube_music_clone/theme/ytm_theme.dart';
+import 'package:youtube_music_clone/util/extensions.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -10,28 +12,17 @@ class Home extends ConsumerStatefulWidget {
   ConsumerState<Home> createState() => _HomeState();
 }
 
-class _HomeState extends ConsumerState<Home> {
+class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
   final _homeScrollController = ScrollController();
-
-  //TODO: Reconstruct overlay
-  late final OverlayState? _overlayState = Overlay.of(context);
-  OverlayEntry? _entry;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _entry = OverlayEntry(
-        builder: (context) {
-          return const Player();
-        },
-      );
-      _overlayState?.insert(_entry!);
-    });
-  }
+  late final _animatedController = AnimationController(
+    duration: const Duration(milliseconds: 200),
+    vsync: this,
+    animationBehavior: AnimationBehavior.preserve,
+  );
 
   @override
   Widget build(BuildContext context) {
+    final value = ref.watch(navigationProvider);
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.black,
@@ -91,7 +82,24 @@ class _HomeState extends ConsumerState<Home> {
           ),
         ],
       ),
+      bottomSheet: BottomSheet(
+        animationController: _animatedController,
+        onDragStart: (d) {},
+        constraints: BoxConstraints(
+          maxHeight: context.screenHeight,
+          minHeight: kBottomNavigationBarHeight,
+        ),
+        clipBehavior: Clip.hardEdge,
+        elevation: 0.0,
+        enableDrag: true,
+        onClosing: () {},
+        builder: (context) {
+          return const Player();
+        },
+      ),
       bottomNavigationBar: BottomAppBar(
+        clipBehavior: Clip.none,
+        elevation: 0.0,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           elevation: 0,
