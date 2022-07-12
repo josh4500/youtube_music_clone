@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_music_clone/provider/provider.dart';
-import 'package:youtube_music_clone/theme/ytm_theme.dart';
 import 'package:youtube_music_clone/util/extensions.dart';
+import 'package:youtube_music_clone/widget/player/album_art_control.dart';
+import 'package:youtube_music_clone/widget/player/track_control.dart';
+import 'package:youtube_music_clone/widget/player/track_tab.dart';
 
 class Player extends ConsumerStatefulWidget {
   const Player({Key? key}) : super(key: key);
@@ -12,97 +14,78 @@ class Player extends ConsumerStatefulWidget {
 }
 
 class _PlayerState extends ConsumerState<Player> {
+  final _playerScrollController = DraggableScrollableController();
+  final double _albumControlOpacity = 1;
+  final bool _seekerVisible = true;
   @override
   void initState() {
     super.initState();
+    _playerScrollController.addListener(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final value = ref.watch(navigationProvider);
-    return SizedBox(
-      height: kBottomNavigationBarHeight,
-      child: Scaffold(
-        extendBody: true,
-        backgroundColor: YTMTheme.greyColor,
-        bottomSheet: BottomSheet(
-          constraints: BoxConstraints(
-            maxHeight: context.screenHeight,
-            minHeight: 0,
-          ),
-          onClosing: () {},
-          builder: (context) {
-            return Container(
-              height: 0,
-            );
-          },
-        ),
-        body: Row(
+    return DraggableScrollableSheet(
+      controller: _playerScrollController,
+      expand: false,
+      snapSizes: [(kBottomNavigationBarHeight + 8) / context.screenHeight, 1],
+      initialChildSize: (kBottomNavigationBarHeight + 8) / context.screenHeight,
+      maxChildSize: 1,
+      minChildSize: (kBottomNavigationBarHeight + 8) / context.screenHeight,
+      snap: true,
+      builder: (context, scrollController) {
+        return Stack(
+          alignment: Alignment.topCenter,
+          fit: StackFit.expand,
           children: [
-            SizedBox(
+            LayoutBuilder(builder: (context, constraints) {
+              return SizedBox(
+                height: constraints.maxHeight,
+                width: constraints.maxWidth,
+                child: Scaffold(
+                  extendBody: true,
+                  bottomSheet: BottomSheet(
+                    builder: (context) => const TrackTab(),
+                    onClosing: () {},
+                  ),
+                  body: ListView(
+                    children: List.generate(
+                      20,
+                      (index) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          color: Color(20 * index).withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+            Positioned(
+              top: 0,
+              width: context.screenWidth,
+              height: kBottomNavigationBarHeight + 4,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: TrackControl(
+                  opacity: _albumControlOpacity,
+                  seekerVisible: _seekerVisible,
+                ),
+              ),
+            ),
+            Positioned(
+              left: 4.5,
               width: value.playerAlbumSize,
               height: value.playerAlbumSize,
-            ),
-            const SizedBox(
-              width: 9,
-              height: kBottomNavigationBarHeight,
-            ),
-            Expanded(
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      blurStyle: BlurStyle.inner,
-                      color: YTMTheme.greyColor,
-                      blurRadius: 8,
-                      offset: Offset(-2, 0),
-                    ),
-                    BoxShadow(
-                      blurStyle: BlurStyle.inner,
-                      color: Colors.transparent,
-                      blurRadius: 8,
-                      offset: Offset(-2, 0),
-                      spreadRadius: 12,
-                    ),
-                  ],
-                ),
-                child: SizedBox(
-                  height: kBottomNavigationBarHeight,
-                  child: Column(
-                    children: const [],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 9,
-              height: kBottomNavigationBarHeight,
-            ),
-            SizedBox(
-              width: (kBottomNavigationBarHeight * 1.5),
-              height: kBottomNavigationBarHeight,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.play_arrow),
-                      color: Colors.white,
-                    ),
-                  ),
-                  Expanded(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.skip_next_sharp),
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+              child: const AlbumArtControl(),
+            )
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

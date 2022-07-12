@@ -82,20 +82,23 @@ class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
           ),
         ],
       ),
-      bottomSheet: BottomSheet(
-        animationController: _animatedController,
-        onDragStart: (d) {},
-        constraints: BoxConstraints(
-          maxHeight: context.screenHeight,
-          minHeight: kBottomNavigationBarHeight,
+      bottomSheet: SafeArea(
+        child: BottomSheet(
+          animationController: _animatedController,
+          onDragStart: (d) {},
+          constraints: BoxConstraints(
+            maxHeight: context.screenHeight,
+            minHeight: kBottomNavigationBarHeight + 4,
+          ),
+          clipBehavior: Clip.hardEdge,
+          elevation: 0.0,
+          enableDrag: true,
+          backgroundColor: Colors.blue,
+          onClosing: () {},
+          builder: (context) {
+            return const Player();
+          },
         ),
-        clipBehavior: Clip.hardEdge,
-        elevation: 0.0,
-        enableDrag: true,
-        onClosing: () {},
-        builder: (context) {
-          return const Player();
-        },
       ),
       bottomNavigationBar: BottomAppBar(
         clipBehavior: Clip.none,
