@@ -19,12 +19,12 @@ class _TrackControlState extends ConsumerState<TrackControl> {
   @override
   Widget build(BuildContext context) {
     final value = ref.watch(navigationProvider);
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: widget.opacity,
-      child: Container(
-        color: Colors.black,
-        height: kBottomNavigationBarHeight + 4,
+    return Container(
+      color: Colors.greenAccent,
+      height: kBottomNavigationBarHeight + 4,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: widget.opacity,
         child: Column(
           children: [
             Row(
@@ -98,6 +98,10 @@ class _TrackControlState extends ConsumerState<TrackControl> {
                 height: 1.5,
                 width: context.screenWidth,
                 color: Colors.yellow,
+                child: const LinearProgressIndicator(
+                  value: 0.3,
+                  backgroundColor: Colors.transparent,
+                ),
               ),
             )
           ],

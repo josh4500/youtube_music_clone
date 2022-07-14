@@ -82,56 +82,67 @@ class _HomeState extends ConsumerState<Home> with TickerProviderStateMixin {
           ),
         ],
       ),
-      bottomSheet: SafeArea(
-        child: BottomSheet(
-          animationController: _animatedController,
-          onDragStart: (d) {},
-          constraints: BoxConstraints(
-            maxHeight: context.screenHeight,
-            minHeight: kBottomNavigationBarHeight + 4,
-          ),
-          clipBehavior: Clip.hardEdge,
-          elevation: 0.0,
-          enableDrag: true,
-          backgroundColor: Colors.blue,
-          onClosing: () {},
-          builder: (context) {
-            return const Player();
-          },
+      bottomSheet: BottomSheet(
+        animationController: _animatedController,
+        backgroundColor: Colors.transparent,
+        onDragStart: (d) {},
+        constraints: BoxConstraints(
+          maxHeight: context.screenHeight,
+          minHeight: kBottomNavigationBarHeight + 4,
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        clipBehavior: Clip.none,
+        clipBehavior: Clip.hardEdge,
         elevation: 0.0,
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
-          currentIndex: 0,
-          backgroundColor: YTMTheme.greyColor,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          selectedFontSize: 11,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              activeIcon: Icon(Icons.home_filled),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.explore_outlined),
-              activeIcon: Icon(Icons.explore),
-              label: 'Explore',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.library_music_outlined),
-              activeIcon: Icon(Icons.library_music),
-              label: 'Library',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.play_circle_outline),
-              activeIcon: Icon(Icons.play_circle),
-              label: 'Upgrade',
+        enableDrag: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        onClosing: () {},
+        builder: (context) {
+          return const Player();
+        },
+      ),
+      bottomNavigationBar: AnimatedContainer(
+        height: kBottomNavigationBarHeight,
+        duration: const Duration(milliseconds: 200),
+        child: Wrap(
+          children: [
+            BottomAppBar(
+              clipBehavior: Clip.none,
+              elevation: 0.0,
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                elevation: 0,
+                landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
+                currentIndex: 0,
+                backgroundColor: YTMTheme.greyColor,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
+                selectedFontSize: 11,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    activeIcon: Icon(Icons.home_filled),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.explore_outlined),
+                    activeIcon: Icon(Icons.explore),
+                    label: 'Explore',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.library_music_outlined),
+                    activeIcon: Icon(Icons.library_music),
+                    label: 'Library',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.play_circle_outline),
+                    activeIcon: Icon(Icons.play_circle),
+                    label: 'Upgrade',
+                  ),
+                ],
+              ),
             ),
           ],
         ),

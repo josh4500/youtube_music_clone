@@ -13,14 +13,29 @@ class Player extends ConsumerStatefulWidget {
   ConsumerState<Player> createState() => _PlayerState();
 }
 
-class _PlayerState extends ConsumerState<Player> {
+class _PlayerState extends ConsumerState<Player> with TickerProviderStateMixin {
   final _playerScrollController = DraggableScrollableController();
   final double _albumControlOpacity = 1;
   final bool _seekerVisible = true;
+  late final _animatedController = AnimationController(
+    duration: const Duration(milliseconds: 200),
+    vsync: this,
+    animationBehavior: AnimationBehavior.preserve,
+  );
   @override
   void initState() {
     super.initState();
-    _playerScrollController.addListener(() {});
+    _playerScrollController.addListener(() {
+      // if (_playerScrollController.pixels > 0) {
+      //   setState(() {
+      //     _albumControlOpacity = _playerScrollController.size;
+      //   });
+      // } else {
+      //   setState(() {
+      //     _albumControlOpacity = 1;
+      //   });
+      // }
+    });
   }
 
   @override
@@ -36,7 +51,7 @@ class _PlayerState extends ConsumerState<Player> {
       snap: true,
       builder: (context, scrollController) {
         return Stack(
-          alignment: Alignment.topCenter,
+          alignment: Alignment.center,
           fit: StackFit.expand,
           children: [
             LayoutBuilder(builder: (context, constraints) {
@@ -45,7 +60,15 @@ class _PlayerState extends ConsumerState<Player> {
                 width: constraints.maxWidth,
                 child: Scaffold(
                   extendBody: true,
+                  backgroundColor: Colors.teal,
                   bottomSheet: BottomSheet(
+                    animationController: _animatedController,
+                    backgroundColor: Colors.transparent,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
                     builder: (context) => const TrackTab(),
                     onClosing: () {},
                   ),
@@ -77,7 +100,8 @@ class _PlayerState extends ConsumerState<Player> {
                 ),
               ),
             ),
-            Positioned(
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 200),
               left: 4.5,
               width: value.playerAlbumSize,
               height: value.playerAlbumSize,

@@ -8,23 +8,54 @@ class TrackTab extends StatefulWidget {
   State<TrackTab> createState() => _TrackTabState();
 }
 
-class _TrackTabState extends State<TrackTab> {
+class _TrackTabState extends State<TrackTab> with TickerProviderStateMixin {
+  late final _tabController = TabController(length: 3, vsync: this);
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
         expand: false,
-        snapSizes: [(kBottomNavigationBarHeight + 8) / context.screenHeight, 1],
+        // snapSizes: [(kBottomNavigationBarHeight + 8) / context.screenHeight, 1],
         initialChildSize:
             (kBottomNavigationBarHeight + 8) / context.screenHeight,
-        maxChildSize: 1,
+        maxChildSize: (context.screenHeight - kBottomNavigationBarHeight) /
+            context.screenHeight,
         minChildSize: (kBottomNavigationBarHeight + 8) / context.screenHeight,
         snap: true,
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
             child: Container(
-              color: Colors.blue,
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
               height: 200,
+              child: Column(
+                children: [
+                  Container(
+                    height: kBottomNavigationBarHeight,
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      // physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        Container(
+                          color: Colors.red,
+                        ),
+                        Container(
+                          color: Colors.blue,
+                        ),
+                        Container(
+                          color: Colors.yellow,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });
